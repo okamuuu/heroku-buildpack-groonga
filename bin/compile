@@ -3,6 +3,8 @@
 
 require "rbconfig"
 require "fileutils"
+require "json"
+require "open-uri"
 
 include FileUtils
 
@@ -11,9 +13,17 @@ build_dir, cache_dir, env_dir, = ARGV
 database_path = "groonga/database"
 
 def detect_latest_version
-  client = Octokit::Client.new
-  tags = client.tags(github_groonga_repository)
-  tags[0].name.delete("v")
+  uri = "https://api.github.com/repos/groonga/groonga/releases"
+  releases = open(uri) do |json|
+    JSON.load(json)
+  end
+  latest_heroku_avaliable_release = releases.find do |release|
+    assets = release["assets"] || []
+    assets.any? do |asset|
+      asset["name"].start_with?("heroku-groonga-")
+    end
+  end
+  latest_heroku_avaliable_release["tag_name"].sub(/\Av/, "")
 end
 
 def sh(*command_line)
