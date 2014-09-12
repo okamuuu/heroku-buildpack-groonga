@@ -74,7 +74,7 @@ version = environment_variables["GROONGA_VERSION"] || detect_latest_version
 Dir.chdir(build_dir) do
   puts("-----> Installing Groonga #{version}")
 
-  base_url = "https://github.com/groonga/groonga/releases/download/v#{version}"
+  base_url = "https://github.com/sugryo/groonga/releases/download/v#{version}"
   base_name = "heroku-groonga-#{version}.tar.xz"
   sh("curl",
      "--silent",
